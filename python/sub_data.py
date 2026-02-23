@@ -1,4 +1,5 @@
 from cortex import Cortex
+import config
 
 class Subcribe():
     """
@@ -224,18 +225,22 @@ class Subcribe():
 # -----------------------------------------------------------
 
 def main():
+    # Validate credentials are configured (raises if CLIENT_ID / CLIENT_SECRET missing)
+    config.validate()
 
-    # Enter your application Client ID and Client Secret below.
-    # You can obtain these credentials after registering your App ID with the Cortex SDK for development.
-    # For instructions, visit: https://emotiv.gitbook.io/cortex-api#create-a-cortex-app
-    your_app_client_id = 'put_your_app_client_id_here'
-    your_app_client_secret = 'put_your_app_client_secret_here'
+    s = Subcribe(config.CLIENT_ID, config.CLIENT_SECRET)
 
-    s = Subcribe(your_app_client_id, your_app_client_secret)
+    # Optionally target a specific EPOC X headset (leave blank for auto-detect)
+    headset_id = config.HEADSET_ID
 
-    # list data streams
-    streams = ['eeg','mot','met','pow']
-    s.start(streams)
+    # List of data streams to subscribe to:
+    #   'eeg'  - raw EEG channels
+    #   'mot'  - accelerometer / gyroscope
+    #   'met'  - performance metrics (engagement, stress, relaxation, …)
+    #   'pow'  - alpha/beta/gamma band power
+    #   'dev'  - device / contact quality info
+    streams = ['eeg', 'mot', 'met', 'pow']
+    s.start(streams, headset_id=headset_id)
 
 if __name__ =='__main__':
     main()
